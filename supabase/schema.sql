@@ -13,12 +13,18 @@ create table if not exists public.rooms (
   round_started_at timestamptz,
   created_at timestamptz not null default now(),
   updated_at timestamptz not null default now(),
-  expires_at timestamptz not null default (now() + interval '6 hours')
+  expires_at timestamptz not null default (now() + interval '20 minutes')
 );
+
+alter table public.rooms
+  alter column expires_at set default (now() + interval '20 minutes');
 
 create index if not exists rooms_lobby_created_idx
   on public.rooms (created_at desc)
   where state = 'lobby';
+
+create index if not exists rooms_expires_at_idx
+  on public.rooms (expires_at);
 
 alter table public.rooms enable row level security;
 
@@ -115,9 +121,9 @@ begin
       prompt = case when p_state = 'drawing' then left(p_prompt, 30) else prompt end,
       results = case when p_state = 'prompt' then '[]'::jsonb else results end,
       round_started_at = case when p_state = 'drawing' then now() else round_started_at end,
-      updated_at = now(),
-      expires_at = now() + interval '6 hours'
+      updated_at = now()
   where code = upper(p_code)
+    and expires_at > now()
     and host_token_hash = encode(digest(p_host_token, 'sha256'), 'hex')
   returning * into target_room;
 
@@ -201,6 +207,7 @@ begin
   from public.rooms
   where code = upper(p_code)
     and host_token_hash = encode(digest(p_host_token, 'sha256'), 'hex')
+    and expires_at > now()
   for update;
 
   if not found then raise exception 'Host verification failed'; end if;
@@ -245,3 +252,11 @@ begin
 exception
   when duplicate_object then null;
 end $$;
+
+create extension if not exists pg_cron;
+
+select cron.schedule(
+  'cleanup-expired-printwithai-rooms',
+  '* * * * *',
+  $$ delete from public.rooms where expires_at <= now() $$
+);

@@ -173,6 +173,21 @@ export default function App() {
     setRoom(null); setIsHost(true); setPrompt(''); setResults([]); setPendingImage(''); setScreen('lobby'); setPlayers([]); window.history.replaceState({}, '', '/')
   }, [])
 
+  useEffect(() => {
+    if (!room?.expiresAt) return
+    const remaining = new Date(room.expiresAt).getTime() - Date.now()
+    const expire = () => {
+      leave()
+      setServiceError('這間房間已建立滿 20 分鐘，系統已自動關閉。')
+    }
+    if (remaining <= 0) {
+      const timer = window.setTimeout(expire, 0)
+      return () => window.clearTimeout(timer)
+    }
+    const timer = window.setTimeout(expire, remaining)
+    return () => window.clearTimeout(timer)
+  }, [leave, room?.expiresAt])
+
   const startGame = async () => {
     try {
       const updated = await updateRemoteRoom(room.code, hostToken, 'prompt')

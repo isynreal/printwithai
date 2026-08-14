@@ -67,9 +67,9 @@ begin
       prompt = case when p_state = 'drawing' then left(p_prompt, 30) else prompt end,
       results = case when p_state = 'prompt' then '[]'::jsonb else results end,
       round_started_at = case when p_state = 'drawing' then now() else round_started_at end,
-      updated_at = now(),
-      expires_at = now() + interval '6 hours'
+      updated_at = now()
   where code = upper(p_code)
+    and expires_at > now()
     and host_token_hash = encode(digest(p_host_token, 'sha256'), 'hex')
   returning * into target_room;
   if not found then raise exception 'Host verification failed'; end if;
@@ -134,7 +134,8 @@ declare
 begin
   select * into target_room from public.rooms
   where code = upper(p_code)
-    and host_token_hash = encode(digest(p_host_token, 'sha256'), 'hex') for update;
+    and host_token_hash = encode(digest(p_host_token, 'sha256'), 'hex')
+    and expires_at > now() for update;
   if not found then raise exception 'Host verification failed'; end if;
   next_results := target_room.results;
   for player_item in select value from jsonb_array_elements(target_room.players)

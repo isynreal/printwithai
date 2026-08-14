@@ -24,6 +24,7 @@ export function normalizeRoom(row) {
     prompt: row.prompt || '',
     results: Array.isArray(row.results) ? row.results : [],
     roundStartedAt: row.round_started_at || null,
+    expiresAt: row.expires_at || null,
     topic: row.state === 'lobby' ? '等待中' : '遊戲進行中',
   }
 }
@@ -32,7 +33,7 @@ export async function listPublicRooms() {
   if (!supabase) return []
   const { data, error } = await supabase
     .from('rooms')
-    .select('code,name,host_name,host_id,state,prompt,players,results,round_started_at,created_at')
+    .select('code,name,host_name,host_id,state,prompt,players,results,round_started_at,created_at,expires_at')
     .eq('state', 'lobby')
     .gt('expires_at', new Date().toISOString())
     .order('created_at', { ascending: false })
@@ -45,7 +46,7 @@ export async function getRemoteRoom(code) {
   if (!supabase) return null
   const { data, error } = await supabase
     .from('rooms')
-    .select('code,name,host_name,host_id,state,prompt,players,results,round_started_at,created_at')
+    .select('code,name,host_name,host_id,state,prompt,players,results,round_started_at,created_at,expires_at')
     .eq('code', code.toUpperCase())
     .single()
   if (error) throw error

@@ -27,12 +27,13 @@ npm run dev
 1. 在 Supabase 建立一個 Project。
 2. 開啟 **SQL Editor**，將 `supabase/schema.sql` 全部貼上並執行。這會建立房間資料表、最多 6 人的原子加入函式、房主驗證、RLS 與 Realtime publication。
    - 如果先前已經執行過舊版 `schema.sql`，改執行 `supabase/multiplayer_results.sql`，加入多人交卷、等待全員與排名同步功能。
+   - 已有資料庫的專案再執行 `supabase/room_expiry_20_minutes.sql`，將所有房間改為建立 20 分鐘後自動關閉及刪除。
 3. 在 Supabase 的 **Project Settings → API** 複製 Project URL 與 anon public key。
 4. 到 Vercel 專案的 **Settings → Environment Variables** 新增：
    - `VITE_SUPABASE_URL`
    - `VITE_SUPABASE_ANON_KEY`
 5. 在 Vercel 重新 Deploy。
 
-設定完成後，公開房間、玩家加入、房主開始與公布題目會透過 Supabase Realtime 在電腦和手機同步。房間會在建立 6 小時後停止顯示。沒有設定 Supabase 時不會顯示任何假房間，並會在大廳提示尚未設定多人服務。
+設定完成後，公開房間、玩家加入、房主開始與公布題目會透過 Supabase Realtime 在電腦和手機同步。房間從建立起固定保留 20 分鐘，之後立即停止使用，並由 Supabase Cron 在一分鐘內從資料庫刪除。沒有設定 Supabase 時不會顯示任何假房間，並會在大廳提示尚未設定多人服務。
 
 視覺概念稿保存在 `design/ui-concept.png`。
