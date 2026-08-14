@@ -9,7 +9,7 @@ npm install
 npm run dev
 ```
 
-沒有 API 金鑰也能走完整個示範流程；AI 評分會使用友善的本機備援結果。
+若尚未設定 API 金鑰，作品會停在等待頁並提示管理員設定；系統不會產生假的 AI 分數。
 
 ## 部署到 Vercel
 
@@ -26,6 +26,7 @@ npm run dev
 
 1. 在 Supabase 建立一個 Project。
 2. 開啟 **SQL Editor**，將 `supabase/schema.sql` 全部貼上並執行。這會建立房間資料表、最多 6 人的原子加入函式、房主驗證、RLS 與 Realtime publication。
+   - 如果先前已經執行過舊版 `schema.sql`，改執行 `supabase/multiplayer_results.sql`，加入多人交卷、等待全員與排名同步功能。
 3. 在 Supabase 的 **Project Settings → API** 複製 Project URL 與 anon public key。
 4. 到 Vercel 專案的 **Settings → Environment Variables** 新增：
    - `VITE_SUPABASE_URL`

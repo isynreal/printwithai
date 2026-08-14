@@ -11,7 +11,7 @@ export function Scoring() {
   )
 }
 
-export function Results({ prompt, results, onReplay, onHome }) {
+export function Results({ prompt, results, isHost, onReplay, onHome }) {
   const sorted = [...results].sort((a, b) => b.score - a.score)
   return (
     <main className="results-page">
@@ -26,13 +26,13 @@ export function Results({ prompt, results, onReplay, onHome }) {
         {sorted.map((result, index) => (
           <article className={`result-card ${index === 0 ? 'result-card--winner' : ''}`} key={result.name}>
             <div className="rank-number">{index + 1}</div>
-            <div className="result-art">{result.image ? <img src={result.image} alt={`${result.name}的作品`} /> : <span>{result.emoji}</span>}</div>
+            <div className="result-art">{result.image ? <img src={result.image} alt={`${result.name}的作品`} /> : <span>⌛</span>}</div>
             <div className="result-copy"><div><h2>{result.name}</h2>{index === 0 ? <span className="winner-label"><Trophy size={14} /> 畫王</span> : null}</div><p>{result.description}</p></div>
             <strong className="result-score">{result.score}<small>分</small></strong>
           </article>
         ))}
       </section>
-      <footer className="results-actions"><button className="primary-button" onClick={onReplay}><RefreshCw size={18} /> 再玩一場</button><button className="secondary-button" onClick={onHome}><Home size={18} /> 回到大廳</button></footer>
+      <footer className="results-actions">{isHost ? <button className="primary-button" onClick={onReplay}><RefreshCw size={18} /> 再玩一場</button> : <span className="next-round-note">等待房主開啟下一題</span>}<button className="secondary-button" onClick={onHome}><Home size={18} /> 回到大廳</button></footer>
     </main>
   )
 }

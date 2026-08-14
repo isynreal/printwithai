@@ -22,6 +22,8 @@ export function normalizeRoom(row) {
     players: Array.isArray(row.players) ? row.players : [],
     state: row.state,
     prompt: row.prompt || '',
+    results: Array.isArray(row.results) ? row.results : [],
+    roundStartedAt: row.round_started_at || null,
     topic: row.state === 'lobby' ? '等待中' : '遊戲進行中',
   }
 }
@@ -30,13 +32,24 @@ export async function listPublicRooms() {
   if (!supabase) return []
   const { data, error } = await supabase
     .from('rooms')
-    .select('code,name,host_name,host_id,state,prompt,players,created_at')
+    .select('code,name,host_name,host_id,state,prompt,players,results,round_started_at,created_at')
     .eq('state', 'lobby')
     .gt('expires_at', new Date().toISOString())
     .order('created_at', { ascending: false })
     .limit(20)
   if (error) throw error
   return data.map(normalizeRoom)
+}
+
+export async function getRemoteRoom(code) {
+  if (!supabase) return null
+  const { data, error } = await supabase
+    .from('rooms')
+    .select('code,name,host_name,host_id,state,prompt,players,results,round_started_at,created_at')
+    .eq('code', code.toUpperCase())
+    .single()
+  if (error) throw error
+  return normalizeRoom(data)
 }
 
 export async function createRemoteRoom(room, hostToken) {
@@ -64,6 +77,25 @@ export async function updateRemoteRoom(code, hostToken, state, prompt = '') {
     p_host_token: hostToken,
     p_state: state,
     p_prompt: prompt,
+  })
+  if (error) throw error
+  return normalizeRoom(data)
+}
+
+export async function submitRemoteResult(code, playerId, result) {
+  const { data, error } = await supabase.rpc('submit_result', {
+    p_code: code,
+    p_player_id: playerId,
+    p_result: result,
+  })
+  if (error) throw error
+  return normalizeRoom(data)
+}
+
+export async function finishRemoteRound(code, hostToken) {
+  const { data, error } = await supabase.rpc('finish_round', {
+    p_code: code,
+    p_host_token: hostToken,
   })
   if (error) throw error
   return normalizeRoom(data)
