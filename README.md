@@ -17,12 +17,21 @@ npm run dev
 2. 在 Vercel 匯入 repository；Framework Preset 選 `Vite`。
 3. 加入伺服器端環境變數 `OPENAI_API_KEY`。
 4. 可選擇加入 `OPENAI_VISION_MODEL`；預設為 `gpt-5.6-luna`。
-5. 部署後，`/api/score` 會用 OpenAI Responses API 的圖片輸入與結構化輸出評分。
+5. 加入 `VITE_SUPABASE_URL` 與 `VITE_SUPABASE_ANON_KEY`，讓不同裝置共用房間。
+6. 部署後，`/api/score` 會用 OpenAI Responses API 的圖片輸入與結構化輸出評分。
 
 請勿將 `OPENAI_API_KEY` 加上 `VITE_` 前綴，否則會被打包到瀏覽器。
 
-## 目前多人模式
+## 設定跨裝置多人房間
 
-這個版本已提供房間代碼、QR Code、相機掃描、最多 6 人限制，以及同一瀏覽器多分頁的 BroadcastChannel 同步。跨裝置公開多人連線需要再接 Supabase Realtime、Firebase 或其他持久化服務；介面與遊戲狀態已拆分，可直接替換資料層。畫板、倒數、等待、AI 評分與排行榜皆可直接試玩。
+1. 在 Supabase 建立一個 Project。
+2. 開啟 **SQL Editor**，將 `supabase/schema.sql` 全部貼上並執行。這會建立房間資料表、最多 6 人的原子加入函式、房主驗證、RLS 與 Realtime publication。
+3. 在 Supabase 的 **Project Settings → API** 複製 Project URL 與 anon public key。
+4. 到 Vercel 專案的 **Settings → Environment Variables** 新增：
+   - `VITE_SUPABASE_URL`
+   - `VITE_SUPABASE_ANON_KEY`
+5. 在 Vercel 重新 Deploy。
+
+設定完成後，公開房間、玩家加入、房主開始與公布題目會透過 Supabase Realtime 在電腦和手機同步。房間會在建立 6 小時後停止顯示。沒有設定 Supabase 時不會顯示任何假房間，並會在大廳提示尚未設定多人服務。
 
 視覺概念稿保存在 `design/ui-concept.png`。

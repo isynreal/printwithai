@@ -1,11 +1,5 @@
 export const COLORS = ['#161616', '#ef3737', '#1c5fdd', '#29a944', '#f2c625', '#9b541f']
 
-export const PUBLIC_ROOMS = [
-  { code: 'EN001', name: '英文快樂班', host: '王老師', count: 4, topic: '水果派對' },
-  { code: 'AN072', name: '週五畫畫社', host: '安安', count: 2, topic: '暖身局' },
-  { code: 'CAT88', name: '貓派大挑戰', host: '林老師', count: 5, topic: '動物世界' },
-]
-
 export const SAMPLE_PLAYERS = [
   { id: 'p2', name: '小明', avatar: '明', color: '#f5c34d' },
   { id: 'p3', name: '小華', avatar: '華', color: '#ef7772' },

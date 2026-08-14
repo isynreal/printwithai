@@ -76,6 +76,10 @@ button:disabled { cursor: not-allowed; opacity: .42; }
 .section-heading h2 { margin: 0 0 6px; font-size: 25px; }
 .section-heading p { margin: 0; color: var(--muted); font-size: 14px; }
 .room-list { list-style: none; padding: 0; margin: 0; }
+.rooms-empty { min-height: 180px; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; color: var(--muted); text-align: center; border-bottom: 1px solid var(--line); }
+.rooms-empty strong { color: var(--ink); font-size: 18px; }
+.rooms-empty span { font-size: 13px; }
+.service-error { margin-top: 12px; padding: 11px 14px; color: #8c3700; background: #fff0d6; border: 1px solid #d99934; border-radius: 7px; font-size: 12px; line-height: 1.6; }
 .room-row { min-height: 86px; display: grid; grid-template-columns: 1fr auto auto; gap: 18px; align-items: center; border-bottom: 1px solid var(--line); padding: 14px 0; }
 .room-row > div:first-child { min-width: 0; }
 .room-row strong, .room-row span { display: block; }
@@ -90,6 +94,7 @@ button:disabled { cursor: not-allowed; opacity: .42; }
 .tape--small { width: 80px; height: 26px; top: -13px; }
 .qr-card h2, .invite-panel h2 { margin: 4px 0 6px; font-size: 20px; }
 .qr-card > p { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.aside-icon { color: var(--blue); margin: 18px 0 8px; }
 .qr-card img, .invite-panel img { width: min(100%, 180px); image-rendering: pixelated; }
 .invite-code { letter-spacing: .18em; font-size: 17px; display: block; margin: 4px 0 14px; }
 .qr-actions { display: flex; justify-content: center; gap: 8px; }

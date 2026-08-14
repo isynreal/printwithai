@@ -29,7 +29,7 @@ export function Room({ room, players, isHost, qrUrl, onAddDemo, onLeave, onStart
           ))}
           {Array.from({ length: 6 - players.length }).map((_, index) => <div className="player-tile player-tile--empty" key={index}>等待加入…</div>)}
         </div>
-        {isHost && players.length < 6 ? <button className="demo-button" onClick={onAddDemo}><UserPlus size={17} /> 邀請一位測試玩家</button> : null}
+        {isHost && onAddDemo && players.length < 6 ? <button className="demo-button" onClick={onAddDemo}><UserPlus size={17} /> 邀請一位測試玩家</button> : null}
       </section>
 
       <aside className="invite-panel">
