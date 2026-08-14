@@ -28,7 +28,7 @@ export function WaitingStage({ players, hostId, results, roundStartedAt, ownPlay
       <h1>{isHost ? '正在等待大家交卷…' : scoring ? 'AI 正在評讀你的作品…' : '作品已送出！'}</h1>
       <p>{isHost ? '所有學生完成後，排行榜會自動公布。' : '先休息一下，等其他同學完成吧。'}</p>
       <div className="submission-progress">
-        <div><strong>{results.length} / {students.length}</strong><span>位學生完成</span></div>
+        <div><strong>{results.length} / {students.length}</strong><span>份作品完成 AI 評分</span></div>
         <div className="submission-track"><span style={{ width: `${students.length ? (results.length / students.length) * 100 : 0}%` }} /></div>
         <ul>
           {students.map((player) => {

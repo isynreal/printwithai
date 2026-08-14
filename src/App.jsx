@@ -200,7 +200,14 @@ export default function App() {
       })
       if (!response.ok) {
         const details = await response.json().catch(() => ({}))
-        throw new Error(details.error === 'AI scoring is not configured' ? 'Vercel 尚未設定 OPENAI_API_KEY' : 'AI 目前無法評分，請稍後再試')
+        const messages = {
+          OPENAI_KEY_MISSING: 'Vercel 尚未設定 OPENAI_API_KEY，或設定後尚未重新部署',
+          OPENAI_AUTH_FAILED: 'OpenAI API Key 無效，請在 Vercel 重新設定',
+          OPENAI_PERMISSION_DENIED: '這組 OpenAI API Key 沒有模型權限，請確認 API Project 與地區設定',
+          OPENAI_QUOTA_EXCEEDED: 'OpenAI API 尚未啟用計費或額度已用完',
+          OPENAI_RATE_LIMITED: 'OpenAI 請求過多，請稍候一分鐘再試',
+        }
+        throw new Error(messages[details.code] || 'AI 目前無法評分，請稍後再試')
       }
       const aiResult = await response.json()
       const updated = await submitRemoteResult(roomCode, playerId, {

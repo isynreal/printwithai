@@ -16,7 +16,7 @@ npm run dev
 1. 將此資料夾推送到 GitHub。
 2. 在 Vercel 匯入 repository；Framework Preset 選 `Vite`。
 3. 加入伺服器端環境變數 `OPENAI_API_KEY`。
-4. 可選擇加入 `OPENAI_VISION_MODEL`；預設為 `gpt-5.6-luna`。
+4. 可選擇加入 `OPENAI_VISION_MODEL`；預設為支援圖片與結構化輸出的 `gpt-4o-mini`。
 5. 加入 `VITE_SUPABASE_URL` 與 `VITE_SUPABASE_ANON_KEY`，讓不同裝置共用房間。
 6. 部署後，`/api/score` 會用 OpenAI Responses API 的圖片輸入與結構化輸出評分。
 
